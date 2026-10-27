@@ -101,3 +101,39 @@ P
   json_merge_mcp a "$HOME/m.json" # unset var, non-interactive -> skipped
   [ ! -e "$HOME/.claude.json" ] || ! grep -q '"a"' "$HOME/.claude.json"
 }
+
+test_list_porcelain_defaults_then_saved_choices() {
+  stub_modules
+  out="$("$REPO/setup" --list --porcelain)"
+  assert_eq "$(printf '%s\n' "$out" | sed -n 1p)" "$(printf 'skills\tmissing\ton\t1\t\tstub')"
+  "$REPO/setup" --only skills --dry-run >/dev/null
+  out="$("$REPO/setup" --list --porcelain)"
+  assert_eq "$(printf '%s\n' "$out" | sed -n 2p)" "$(printf 'mcp\tmissing\ton\t0\t\tstub')"
+}
+
+test_forge_events_wrap_each_module() {
+  d="$HOME/mods"; mkdir -p "$d"
+  cat >"$d/10-bad.sh" <<'M'
+MODULE_NAME=bad; MODULE_DESC="fails"; MODULE_DEFAULT=on; MODULE_DEPS=""
+bad_status() { echo missing; }
+bad_install() { false; }
+M
+  cat >"$d/20-child.sh" <<'M'
+MODULE_NAME=child; MODULE_DESC="needs bad"; MODULE_DEFAULT=on; MODULE_DEPS="bad"
+child_status() { echo missing; }
+child_install() { echo CHILD-RAN; }
+M
+  cat >"$d/30-free.sh" <<'M'
+MODULE_NAME=free; MODULE_DESC="independent"; MODULE_DEFAULT=on; MODULE_DEPS=""
+free_status() { echo missing; }
+free_install() { echo FREE-RAN; }
+M
+  out="$(FORGE_EVENTS=1 SETUP_MODULES_DIR="$d" "$REPO/setup" --yes 2>&1)" || true
+  assert_contains "$out" "@@forge start bad"
+  assert_contains "$out" "@@forge result bad failed exit 1"
+  assert_contains "$out" "@@forge result child skipped dependency bad did not succeed"
+  assert_contains "$out" "@@forge result free ok"
+  assert_absent "$out" "@@forge start child"
+  out="$(SETUP_MODULES_DIR="$d" "$REPO/setup" --yes 2>&1)" || true
+  assert_absent "$out" "@@forge"
+}
