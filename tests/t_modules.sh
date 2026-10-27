@@ -148,3 +148,33 @@ test_snapshot_strips_brew_prefix_from_mcp_commands() {
   assert_contains "$(cat "$cp/mcp.json")" '"command": "codegraph"'
   assert_absent "$(cat "$cp/mcp.json")" "/usr/local/bin"
 }
+
+test_render_keeps_foreign_marker_blocks_verbatim_and_idempotent() {
+  . "$REPO/lib/common.sh"
+  d="$HOME/.claude"; mkdir -p "$d"
+  cat >"$d/CLAUDE.md" <<'M'
+old text
+<!-- gentle-ai:persona -->
+persona body
+<!-- /gentle-ai:persona -->
+
+<!-- gentle-ai:agent-routing -->
+routing
+<!-- gentle-ai:remote-authorization -->
+nested body
+<!-- /gentle-ai:remote-authorization -->
+tail
+<!-- /gentle-ai:agent-routing -->
+M
+  _insert_block "$d/CLAUDE.md" claude-setup:rules "my rules"
+  render_template "$REPO/claude/CLAUDE.md" "$d/CLAUDE.md"
+  out="$(cat "$d/CLAUDE.md")"
+  assert_contains "$out" $'<!-- gentle-ai:persona -->\npersona body\n<!-- /gentle-ai:persona -->'
+  assert_contains "$out" $'<!-- gentle-ai:remote-authorization -->\nnested body\n<!-- /gentle-ai:remote-authorization -->\ntail\n<!-- /gentle-ai:agent-routing -->'
+  assert_contains "$out" "my rules"
+  assert_absent "$out" "old text"
+  assert_eq "$(grep -c 'gentle-ai:remote-authorization -->' "$d/CLAUDE.md")" "2"
+  render_template "$REPO/claude/CLAUDE.md" "$d/CLAUDE.md"
+  assert_eq "$(grep -c 'gentle-ai:persona -->' "$d/CLAUDE.md")" "2"
+  assert_eq "$(find "$d" -maxdepth 1 -name 'CLAUDE.md.bak.*' | wc -l | tr -d ' ')" "1"
+}

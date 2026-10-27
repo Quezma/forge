@@ -5,7 +5,8 @@ Problem: `render_template` replaces ~/.claude/CLAUDE.md keeping only `<!-- X:sta
 TDD: strict; runner `bash tests/run.sh`.
 
 ## Tasks
-- [ ] T1 CLAUDE.md render keeps foreign `<!-- ns:name -->...<!-- /ns:name -->` blocks from the existing file. — route: delegated writer
+- [x] T1 CLAUDE.md render keeps foreign `<!-- ns:name -->...<!-- /ns:name -->` blocks from the existing file. — route: delegated writer
+  - RED: test_render_keeps_foreign_marker_blocks_verbatim_and_idempotent failed (persona block missing). GREEN: 32 passed, 0 failed after `_foreign_blocks`.
 - [ ] T2 settings.json is deep-merged into the existing file (existing keys kept, lists/hooks unioned without duplicates, repo scalars win), with .bak only when changed. — route: delegated writer (same writer)
 
 ## Acceptance

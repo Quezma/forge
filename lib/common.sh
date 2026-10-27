@@ -179,8 +179,19 @@ remove_block() {
   rm -f "$tmp"
 }
 
+# _foreign_blocks template dest: print the top-level `<!-- ns:name -->...<!-- /ns:name -->`
+# blocks of dest (nested ones travel with their parent) whose opening line template lacks.
+_foreign_blocks() {
+  awk -v re='^<!-- [A-Za-z0-9_-]+:[A-Za-z0-9_-]+ -->$' '
+    NR == FNR { seen[$0] = 1; next }
+    $0 ~ re && $0 !~ /:(start|end) -->$/ { if (!depth++) { keep = !($0 in seen); if (keep) print "" } }
+    keep { print }
+    $0 ~ /^<!-- \/[A-Za-z0-9_-]+:[A-Za-z0-9_-]+ -->$/ && depth > 0 { depth-- }' "$1" "$2"
+}
+
 # render_template src dest: replace __HOME__, back up a differing dest (.bak.<ts>),
-# and keep marker blocks (e.g. claude-setup:rules) that dest has but the template lacks.
+# keep marker blocks (claude-setup:rules start/end, foreign ns:name blocks) that dest has but
+# the template lacks.
 render_template() {
   local src="$1" dest="$2" tmp m
   if [ "$DRY_RUN" = 1 ]; then
@@ -193,6 +204,7 @@ render_template() {
     for m in $(grep -o '<!-- [A-Za-z0-9_-]*:start -->' "$dest" | sed 's/<!-- \(.*\):start -->/\1/'); do
       grep -qF "<!-- $m:start -->" "$tmp" || _insert_block "$tmp" "$m" "$(_block_awk "$m" get <"$dest")"
     done
+    _foreign_blocks "$tmp" "$dest" >>"$tmp"
     if cmp -s "$tmp" "$dest"; then rm -f "$tmp"; return 0; fi
     cp "$dest" "$dest.bak.$(date +%s)"
   fi
