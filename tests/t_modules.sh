@@ -178,3 +178,30 @@ M
   assert_eq "$(grep -c 'gentle-ai:persona -->' "$d/CLAUDE.md")" "2"
   assert_eq "$(find "$d" -maxdepth 1 -name 'CLAUDE.md.bak.*' | wc -l | tr -d ' ')" "1"
 }
+
+test_render_merges_settings_json_instead_of_replacing() {
+  . "$REPO/lib/common.sh"
+  d="$HOME/.claude"; mkdir -p "$d"
+  cat >"$d/settings.json" <<'J'
+{"outputStyle": "Gentleman",
+ "enabledPlugins": {"extra@market": true},
+ "permissions": {"deny": ["Read(.env)", "Bash(mine)"]},
+ "hooks": {"Stop": [{"hooks": [{"type": "command", "command": "gentle-ai stop"}]}]}}
+J
+  render_template "$REPO/claude/settings.json" "$d/settings.json"
+  python3 - "$d/settings.json" "$REPO/claude/settings.json" <<'P'
+import json, sys
+s, t = (json.load(open(f)) for f in sys.argv[1:3])
+assert s["outputStyle"] == "Gentleman", s
+assert s["enabledPlugins"]["extra@market"] is True and set(t["enabledPlugins"]) <= set(s["enabledPlugins"])
+deny = s["permissions"]["deny"]
+assert "Bash(mine)" in deny and len(deny) == len(set(deny)) and set(t["permissions"]["deny"]) <= set(deny), deny
+assert s["permissions"]["defaultMode"] == t["permissions"]["defaultMode"]
+stop = json.dumps(s["hooks"]["Stop"])
+assert "gentle-ai stop" in stop
+assert all(k in s["hooks"] for k in t.get("hooks", {})), s["hooks"]
+assert s["model"] == t["model"]
+P
+  render_template "$REPO/claude/settings.json" "$d/settings.json"
+  assert_eq "$(find "$d" -maxdepth 1 -name 'settings.json.bak.*' | wc -l | tr -d ' ')" "1"
+}

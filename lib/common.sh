@@ -189,9 +189,25 @@ _foreign_blocks() {
     $0 ~ /^<!-- \/[A-Za-z0-9_-]+:[A-Za-z0-9_-]+ -->$/ && depth > 0 { depth-- }' "$1" "$2"
 }
 
+# _MERGE_PY: deep-merge template (argv[2]) over dest (argv[1]) into argv[3]: objects recurse,
+# dest-only keys stay, lists are unioned (dest order first), other values come from the template.
+_MERGE_PY='
+import json, sys
+def merge(d, t):
+    if isinstance(d, dict) and isinstance(t, dict):
+        return {**{k: merge(v, t[k]) if k in t else v for k, v in d.items()}, **{k: v for k, v in t.items() if k not in d}}
+    if isinstance(d, list) and isinstance(t, list):
+        return d + [x for x in t if x not in d]
+    return t
+d, t, out = sys.argv[1:4]
+with open(out, "w") as f:
+    json.dump(merge(json.load(open(d)), json.load(open(t))), f, indent=2, ensure_ascii=False)
+    f.write("\n")
+'
+
 # render_template src dest: replace __HOME__, back up a differing dest (.bak.<ts>),
 # keep marker blocks (claude-setup:rules start/end, foreign ns:name blocks) that dest has but
-# the template lacks.
+# the template lacks, and deep-merge *.json instead of replacing.
 render_template() {
   local src="$1" dest="$2" tmp m
   if [ "$DRY_RUN" = 1 ]; then
@@ -204,7 +220,13 @@ render_template() {
     for m in $(grep -o '<!-- [A-Za-z0-9_-]*:start -->' "$dest" | sed 's/<!-- \(.*\):start -->/\1/'); do
       grep -qF "<!-- $m:start -->" "$tmp" || _insert_block "$tmp" "$m" "$(_block_awk "$m" get <"$dest")"
     done
-    _foreign_blocks "$tmp" "$dest" >>"$tmp"
+    m="$(_foreign_blocks "$tmp" "$dest")" # captured first: awk must not read what we append
+    [ -z "$m" ] || printf '%s\n' "$m" >>"$tmp"
+    case "$dest" in *.json)
+      cp "$tmp" "$tmp.t"
+      python3 -c "$_MERGE_PY" "$dest" "$tmp.t" "$tmp" 2>/dev/null || cp "$tmp.t" "$tmp" # unparsable dest: template wins
+      rm -f "$tmp.t" ;;
+    esac
     if cmp -s "$tmp" "$dest"; then rm -f "$tmp"; return 0; fi
     cp "$dest" "$dest.bak.$(date +%s)"
   fi

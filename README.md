@@ -29,7 +29,7 @@ Numbers toggle modules, `a` selects all, `n` none, Enter runs. Dependencies are 
 | Module | Default | What it does |
 |---|---|---|
 | prerequisites | on | Xcode CLT, Homebrew, git, node, python3 |
-| claude-config | on | `~/.claude` config files (`CLAUDE.md`, `settings.json`, `mods/`; `.bak.<ts>` backup of changed ones) |
+| claude-config | on | `~/.claude` config files (`CLAUDE.md`, `settings.json`, `mods/`; `.bak.<ts>` backup of changed ones; existing `CLAUDE.md` marker blocks and `settings.json` keys, hooks and plugins are kept, with `settings.json` deep-merged) |
 | skills | on | symlinks `skills/*` into `~/.claude/skills` (existing real dirs are backed up) |
 | plugins | on | marketplaces and plugins from `plugins.json` |
 | mcp | on | `mcp.json` servers into `~/.claude.json` (not the tool-owned ones) |
