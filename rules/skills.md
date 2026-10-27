@@ -7,7 +7,7 @@ Mandatory. Before the first source edit of any implementation (feature, fix, ref
 | Any code change that crosses a boundary: layers, remote calls, DB writes, messaging, locks, retries | `architecture-patterns` (Guide) | `architecture-patterns` (Audit) |
 | New project, service, or major feature | `architecture-patterns` (Design) | — |
 | `nx.json` at the root | `nx-monorepo` (Guide) | `nx-monorepo` (Audit) |
-| `@nestjs/core` in `package.json` | `nestjs` (Guide) | `nestjs` (Audit) |
+| `@nestjs/core` in `package.json` | `nestjs` (Guide) | `nestjs` (Audit), `nestjs-perf` |
 | `mix.exs` (Elixir/Phoenix) | `ex-atlas-discover` if `.ex_atlas/patterns/` is empty | `elixir-audit`, `elixir-perf`, `ex-atlas-learn` |
 | React/TypeScript with the `react_atlas` MCP | `react-atlas-discover` if `.react_atlas/patterns/` is empty | `react-atlas-learn` |
 | UI behavior changed | — | `qa-engineer` against the running app |

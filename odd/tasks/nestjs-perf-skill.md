@@ -7,8 +7,8 @@ Constraints: same format and hard rules as elixir-perf; probes run only against 
 TDD: n/a for prose skill content; checks = tests/run.sh green (routing test requires the rules row) + structural readback.
 
 ## Tasks
-- [ ] T1 Research + write SKILL.md, assets/checklist.md (IDs, probe method, Src, tag), assets/perf-brief.md (probe harness, thresholds, report format). — route: delegated research+writer (3 files, preparation trigger)
-- [ ] T2 Add `nestjs-perf` to the NestJS row of `rules/skills.md` (merge column). — route: inline (one mechanical line)
+- [x] T1 Research + write SKILL.md, assets/checklist.md (IDs, probe method, Src, tag), assets/perf-brief.md (probe harness, thresholds, report format). — route: delegated research+writer (3 files, preparation trigger) Evidence: skills/nestjs-perf (220 lines), 42 rules all with severity+Probe+Src (33 [doc] / 1 [3p] / 8 [unverified]), safety gate aborts on non-test DB + always-rollback, tests 34/34, setup --dry-run symlinks it.
+- [x] T2 Add `nestjs-perf` to the NestJS row of `rules/skills.md` (merge column). — route: inline (one mechanical line) Evidence: rules/skills.md NestJS row; routing test green.
 
 ## Acceptance
 - Every checklist rule has an ID, a probe method, and a source URL.
