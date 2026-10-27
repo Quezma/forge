@@ -102,3 +102,7 @@ Tests use a temporary `HOME` and `--dry-run`; nothing touches your real config.
 ## Credits / third-party
 
 Plugins (`plugins.json`) are installed from their own upstream marketplaces; nothing from them is redistributed here. `tools/qa-engineer/internal/browser/axe.min.js` is [axe-core](https://github.com/dequelabs/axe-core) (MPL-2.0, Deque Systems), kept with its original header.
+
+## License
+
+[Apache-2.0](LICENSE) © Quezma. Third-party components keep their own licenses (see above).
