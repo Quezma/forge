@@ -1,8 +1,31 @@
-# claude-setup
+# Forge
 
-My Claude Code setup plus my own tools, installed on a new Mac by one wizard.
+**A one-command wizard that sets up Claude Code, its config, skills, plugins, MCP servers and companion tools on a fresh Mac.**
 
-## What is inside
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+![Platform: macOS](https://img.shields.io/badge/platform-macOS-lightgrey.svg)
+![Shell: bash 3.2+](https://img.shields.io/badge/shell-bash%203.2%2B-green.svg)
+
+Forge turns a new machine into a ready-to-work Claude Code environment in one run. It is plain bash, modular, idempotent and safe to re-run, with a `--dry-run` mode that shows every command before anything changes.
+
+## Features
+
+- **Interactive wizard** with module toggles, automatic dependency selection and a clear `ok|failed|skipped` summary.
+- **Modular**: each installable unit is one small script in `modules/`; adding your own takes a few lines.
+- **Safe by default**: backups of changed files, deep-merged `settings.json`, symlink-guarded state, and nothing destructive on re-run.
+- **No secrets in git**: MCP credentials are `${VAR}` placeholders resolved at install time.
+- **Round-trip**: `snapshot.sh` exports a machine's current config back into the repo.
+- **Tested**: plain bash tests in a temporary `HOME`, plus shellcheck.
+
+## Quick start
+
+Requirements: macOS (works with the system `/bin/bash` 3.2). Everything else (Xcode CLT, Homebrew, git, node, python3) is installed by the `prerequisites` module.
+
+```sh
+git clone https://github.com/Quezma/forge.git && cd forge && ./setup
+```
+
+## Project layout
 
 ```
 setup            the wizard (plain bash, works with macOS /bin/bash 3.2)
@@ -18,11 +41,7 @@ plugins.json     Claude Code marketplaces and plugins
 tools/           ex_atlas, react_atlas, qa-engineer (git subtree imports)
 ```
 
-## New machine
-
-```sh
-git clone <this repo> claude-setup && cd claude-setup && ./setup
-```
+## Usage
 
 Numbers toggle modules, `a` selects all, `n` none, Enter runs. Dependencies are selected for you. Modules run in numeric order; a failing module does not stop the others, but its dependents are skipped. The summary lists `ok|failed|skipped` and manual follow-ups. Re-running is safe.
 
@@ -98,6 +117,15 @@ shellcheck setup lib/*.sh modules/*.sh snapshot.sh tests/*.sh install.sh
 ```
 
 Tests use a temporary `HOME` and `--dry-run`; nothing touches your real config.
+
+## Contributing
+
+Issues and pull requests are welcome. Before opening a PR:
+
+1. Keep scripts compatible with macOS `/bin/bash` 3.2.
+2. Run `tests/run.sh` and `shellcheck` (see [Tests](#tests)); both must pass.
+3. Use [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`, ...).
+4. Never commit secrets; use `${VAR}` placeholders.
 
 ## Credits / third-party
 
