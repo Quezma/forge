@@ -35,7 +35,7 @@ ask-on-risk. Forecast ~500-700 authored lines (Go dominates). Branch `feat/tui-w
 - [x] T1 Bash contract: `--list --porcelain`, `FORGE_EVENTS` lines; tests. Route: delegated (writer trigger, with T2).
 - [x] T2 Go frontend in `wizard/` (go.mod, model, screens, runner via `setup`), tests. Route: delegated.
 - [x] T3 `setup` launcher (exec binary / build / download / fallback) + release workflow + README. Route: delegated.
-- [ ] T4 Verification: all suites, a real TUI dry-run under a temp HOME. Route: parent.
+- [x] T4 Verification: all suites, a real TUI dry-run under a temp HOME. Route: parent.
 
 ## Progress / evidence
 
@@ -43,6 +43,8 @@ ask-on-risk. Forecast ~500-700 authored lines (Go dominates). Branch `feat/tui-w
 - T1 `2eb2035`: RED = 2 new tests failing in tests/run.sh, GREEN = 39 passed after change.
 - T2 `31a9e68`: RED = `go vet` undefined: model (model_test.go written first); GREEN = go test ok. setup.go parsing/runner tests were written right after the code (not RED-first). Decisions: deselecting a module also deselects its dependents (notice shown); runner is a function field.
 - T3: RED = tui launch test failing; GREEN = tests/run.sh 42 passed. Decision: in dry-run the TUI starts only if the binary already exists (no build/download, message printed). `FORGE_BIN` overrides the binary path (used by tests). Go build runs on every interactive launch when Go exists (incremental).
+
+- T4 (parent): `tests/run.sh` 42/42, `go test` ok. Drove `forge --dry-run` in a Python pty (temp HOME, answering the OSC 11 / cursor-position queries): welcome -> picker (j moves focus, dep notes) -> review [dry run] -> progress -> summary `7 ok · 0 failed · 0 skipped` + follow-ups, exit 0. Not verified: real (non-dry) build/download path, release workflow, narrow terminals (no list scrolling; panels wrap at about 40 columns when width is unknown).
 
 ## Next step
 
