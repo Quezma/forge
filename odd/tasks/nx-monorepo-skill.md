@@ -7,8 +7,8 @@ Constraints: follow existing skill format (frontmatter, Activation Contract, Har
 TDD: n/a for prose skill content; checks = tests/run.sh still green + structural readback.
 
 ## Tasks
-- [ ] T1 Research Nx best practices with sources. — route: delegated research worker
-- [ ] T2 Write SKILL.md, assets/checklist.md (rule IDs + sources), assets/audit-brief.md, assets/boundaries-setup.md. — route: delegated writer
+- [x] T1 Research Nx best practices with sources. — route: delegated research worker Evidence: scratchpad nx-research.md (sourced, gaps marked).
+- [x] T2 Write SKILL.md, assets/checklist.md (rule IDs + sources), assets/audit-brief.md, assets/boundaries-setup.md. — route: delegated writer Evidence: skills/nx-monorepo (281 lines), 60 rules all with Check+Src+tag, tests 33/33, setup --dry-run symlinks it. Route: delegated writer (4 files).
 
 ## Acceptance
 - Every checklist rule has an ID and a source URL; version-specific rules are marked.
