@@ -7,7 +7,7 @@ Constraints: same format as nestjs (Activation Contract, Hard Rules, Decision Ga
 TDD: n/a for prose skill content; checks = tests/run.sh green + structural readback.
 
 ## Tasks
-- [x] T1 Research patterns with sources, then write SKILL.md, assets/checklist.md (rule IDs + Check + Src + tag), assets/examples.md (good/bad pairs per critical rule), assets/design.md (new project/feature decision procedure), assets/audit-brief.md. — route: delegated research+writer (5 files, preparation trigger) Evidence: skills/architecture-patterns (625 lines), 86 rules all with severity+Check+Src, 9 blockers all with examples, 51 [doc] / 11 [3p] / 24 [unverified], tests 33/33, setup --dry-run symlinks it.
+- [x] T1 Research patterns with sources, then write SKILL.md, assets/checklist.md (rule IDs + Check + Src + tag), assets/examples.md (good/bad pairs per critical rule), assets/design.md (new project/feature decision procedure), assets/audit-brief.md. — route: delegated research+writer (5 files, preparation trigger) Evidence: skills/architecture-patterns (625 lines), 86 rules all with severity+Check+Src, 9 blockers all with examples, 63 [doc] / 23 [3p] / 0 [unverified] (sources re-verified), tests 33/33, setup --dry-run symlinks it.
 
 ## Acceptance
 - Every checklist rule has an ID, a check, and a source URL.
