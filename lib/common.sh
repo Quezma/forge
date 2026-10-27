@@ -124,7 +124,8 @@ os.replace(tmp, path)
 
 # json_merge_mcp name file: merge one server from a {name: server} file ("-" = stdin)
 # into ~/.claude.json. __HOME__ and ${VAR} are substituted; a server with an unset
-# ${VAR} is prompted for (interactive) or skipped with a follow-up.
+# ${VAR} is prompted for (interactive) or skipped with a follow-up; a server already in
+# ~/.claude.json with an unset ${VAR} is kept as is, without prompting.
 json_merge_mcp() {
   local name="$1" file="$2" tmp="" missing v rc=0
   if [ "$file" = "-" ]; then tmp="$(mktemp)"; cat >"$tmp"; file="$tmp"; fi
@@ -132,6 +133,9 @@ json_merge_mcp() {
     printf '+ merge MCP server %s into %s/.claude.json\n' "$name" "$HOME"
   else
     missing="$(python3 -c "$_MCP_PY" vars "$name" "$file" "$HOME")"
+    if [ -n "$missing" ] && mcp_present "$name"; then # existing install: keep its secret
+      log "ok mcp $name (kept existing)"; [ -z "$tmp" ] || rm -f "$tmp"; return 0
+    fi
     for v in $missing; do
       ask_secret "$v" "Value for $v (MCP server $name)" || true
     done

@@ -89,7 +89,9 @@ J
   TEST_SECRET_A="s3cr\"et" json_merge_mcp a "$HOME/m.json"
   json_merge_mcp b "$HOME/m.json"
   unset TEST_SECRET_A
-  json_merge_mcp a "$HOME/m.json" # already present stays; unset must not clobber
+  out="$(json_merge_mcp a "$HOME/m.json" 2>&1)" # already present stays; unset must not clobber
+  assert_absent "$out" "skipped"
+  assert_absent "$out" "follow-up"
   python3 - "$HOME" <<'P'
 import json, sys
 h = sys.argv[1]
