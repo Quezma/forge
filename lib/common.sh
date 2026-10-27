@@ -118,7 +118,7 @@ cfg.setdefault("mcpServers", {})[name] = json.loads(text)
 tmp = path + ".tmp"
 with open(tmp, "w") as f:
     json.dump(cfg, f, indent=2)
-os.chmod(tmp, os.stat(path).st_mode & 0o777 if os.path.exists(path) else 0o600)
+os.chmod(tmp, 0o600)  # holds MCP secrets
 os.replace(tmp, path)
 '
 
@@ -158,7 +158,7 @@ codex_mcp_merge() {
   if [ "$DRY_RUN" = 1 ]; then printf '+ add MCP server %s to %s\n' "$name" "$cfg"; return 0; fi
   [ -z "$(python3 -c "$_MCP_PY" vars "$name" "$file" "$HOME")" ] || return 0
   mkdir -p "$HOME/.codex"
-  [ -e "$cfg" ] || (umask 077; : >"$cfg")
+  (umask 077; : >>"$cfg"); chmod 600 "$cfg" # holds MCP secrets
   python3 -c "$_MCP_PY" toml "$name" "$file" "$HOME" >>"$cfg" && log "ok codex mcp $name"
 }
 

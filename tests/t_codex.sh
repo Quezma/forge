@@ -52,3 +52,13 @@ test_mcp_dry_run_lists_codex_servers_without_tool_owned_ones() {
   assert_absent "$out" "add MCP server qa-engineer to"
   [ ! -e "$HOME/.codex/config.toml" ]
 }
+
+test_mcp_config_files_holding_secrets_end_up_0600() {
+  . "$REPO/lib/common.sh"; fake_codex
+  export STITCH_X_GOOG_API_KEY=k
+  mkdir -p "$HOME/.codex"; echo '{}' >"$HOME/.claude.json"; : >"$HOME/.codex/config.toml"
+  chmod 644 "$HOME/.claude.json" "$HOME/.codex/config.toml"
+  json_merge_mcp stitch "$REPO/mcp.json" >/dev/null
+  codex_mcp_merge stitch "$REPO/mcp.json" >/dev/null
+  assert_eq "$(find "$HOME/.claude.json" "$HOME/.codex/config.toml" -perm 600 | wc -l | tr -d ' ')" "2"
+}
