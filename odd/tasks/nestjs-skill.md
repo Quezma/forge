@@ -7,7 +7,7 @@ Constraints: follow existing skill format (frontmatter, Activation Contract, Har
 TDD: n/a for prose skill content; checks = tests/run.sh still green + structural readback.
 
 ## Tasks
-- [ ] T1 Research NestJS best practices + cycle prevention with sources, then write SKILL.md, assets/checklist.md (rule IDs + sources), assets/audit-brief.md, assets/boundaries.md. — route: delegated research+writer (4 files, preparation trigger)
+- [x] T1 Research NestJS best practices + cycle prevention with sources, then write SKILL.md, assets/checklist.md (rule IDs + sources), assets/audit-brief.md, assets/boundaries.md. — route: delegated research+writer (4 files, preparation trigger) Evidence: skills/nestjs (334 lines), 82 rules all with Check+Src+tag, baseline Nest 12, 5 [unverified] + 9 [3p], tests 33/33, setup --dry-run symlinks it.
 
 ## Acceptance
 - Every checklist rule has an ID and a source URL; version-specific rules are marked.
