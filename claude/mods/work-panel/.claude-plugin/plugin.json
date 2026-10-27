@@ -1,0 +1,1 @@
+{ "name": "work-panel", "version": "0.3.0", "description": "Right panel with changed files, running agents and the session todo list, with a todo mode that makes Claude track every task", "types": "./types/index.d.ts" }

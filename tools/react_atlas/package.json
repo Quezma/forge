@@ -1,0 +1,22 @@
+{
+  "name": "react-atlas",
+  "version": "0.1.0",
+  "description": "MCP server that indexes a React/TypeScript project and audits component misuse",
+  "type": "module",
+  "bin": {
+    "react-atlas": "bin/react-atlas.ts"
+  },
+  "engines": {
+    "node": ">=23"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.ts"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^26.6.5"
+  },
+  "dependencies": {
+    "typescript": "6.0.3"
+  }
+}

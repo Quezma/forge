@@ -1,0 +1,1 @@
+{ "name": "usage-status", "version": "0.2.0", "description": "Colored band with session, context window and 5h/weekly rate-limit usage", "types": "./types/index.d.ts" }

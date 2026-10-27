@@ -1,0 +1,4 @@
+{"tool":"find_reusable","args":{"query":"price tag"},"expect":"PriceTag","top_k":5}
+{"tool":"audit","args":{},"expect":{"check":"ds_bypass","file":"src/features/cart/CartButton.tsx"},"top_k":5}
+{"tool":"audit","args":{},"expect":{"check":"state_misuse","file":"src/features/cart/CartCount.tsx"},"top_k":5}
+{"tool":"audit","args":{},"expect":{"check":"wrong_usage","file":"src/features/checkout/Legacy.tsx"},"top_k":5}

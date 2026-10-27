@@ -1,0 +1,38 @@
+{
+  "codegraph": {
+    "args": [
+      "serve",
+      "--mcp"
+    ],
+    "command": "codegraph",
+    "type": "stdio"
+  },
+  "context7": {
+    "args": [
+      "-y",
+      "--package=@upstash/context7-mcp@2.2.5",
+      "--",
+      "context7-mcp"
+    ],
+    "command": "npx"
+  },
+  "stitch": {
+    "type": "http",
+    "url": "https://stitch.googleapis.com/mcp",
+    "headers": {
+      "X-Goog-Api-Key": "${STITCH_X_GOOG_API_KEY}"
+    }
+  },
+  "figma": {
+    "type": "http",
+    "url": "https://mcp.figma.com/mcp"
+  },
+  "qa-engineer": {
+    "type": "stdio",
+    "command": "__HOME__/.local/bin/qa-engineer",
+    "args": [
+      "mcp"
+    ],
+    "env": {}
+  }
+}

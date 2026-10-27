@@ -1,0 +1,52 @@
+{
+  "marketplaces": {
+    "claude-plugins-official": {
+      "source": "github",
+      "repo": "anthropics/claude-plugins-official"
+    },
+    "anthropic-agent-skills": {
+      "source": "github",
+      "repo": "anthropics/skills"
+    },
+    "ui-ux-pro-max-skill": {
+      "source": "github",
+      "repo": "nextlevelbuilder/ui-ux-pro-max-skill"
+    },
+    "openai-codex": {
+      "source": "github",
+      "repo": "openai/codex-plugin-cc"
+    },
+    "ponytail": {
+      "source": "github",
+      "repo": "DietrichGebert/ponytail"
+    },
+    "humanizer": {
+      "source": "github",
+      "repo": "blader/humanizer"
+    },
+    "marketingskills": {
+      "source": "github",
+      "repo": "coreyhaines31/marketingskills"
+    },
+    "quezma-mods": {
+      "source": "directory",
+      "path": "__HOME__/.claude/mods"
+    }
+  },
+  "plugins": [
+    "code-review@claude-plugins-official",
+    "code-simplifier@claude-plugins-official",
+    "codex@openai-codex",
+    "feature-dev@claude-plugins-official",
+    "figma@claude-plugins-official",
+    "frontend-design@claude-plugins-official",
+    "humanizer@humanizer",
+    "marketing-skills@marketingskills",
+    "ponytail@ponytail",
+    "security-guidance@claude-plugins-official",
+    "superpowers@claude-plugins-official",
+    "ui-ux-pro-max@ui-ux-pro-max-skill",
+    "usage-status@quezma-mods",
+    "work-panel@quezma-mods"
+  ]
+}

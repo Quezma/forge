@@ -1,0 +1,8 @@
+{
+  "name": "quezma-mods",
+  "owner": { "name": "Quezma" },
+  "plugins": [
+    { "name": "usage-status", "source": "./usage-status", "description": "Colored band with session, context window and 5h/weekly rate-limit usage" },
+    { "name": "work-panel", "source": "./work-panel", "description": "Right panel with changed files, running agents and the session todo list" }
+  ]
+}
