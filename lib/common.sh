@@ -99,6 +99,19 @@ if act == "vars":
     print("\n".join(v for v in need if v not in os.environ))
     sys.exit(0)
 text = re.sub(r"\$\{(\w+)\}", lambda m: json.dumps(os.environ[m.group(1)])[1:-1], text)
+if act == "toml":  # Codex [mcp_servers.<name>] table; JSON strings/arrays are valid TOML
+    s, q = json.loads(text), json.dumps
+    tbl = lambda d: "{ " + ", ".join(q(k) + " = " + q(v) for k, v in d.items()) + " }"
+    out = ["", "[mcp_servers.%s]" % q(name)]
+    if "url" in s:
+        out.append("url = " + q(s["url"]))
+        if s.get("headers"): out.append("http_headers = " + tbl(s["headers"]))
+    else:
+        out.append("command = " + q(s["command"]))
+        if s.get("args"): out.append("args = " + q(s["args"]))
+        if s.get("env"): out.append("env = " + tbl(s["env"]))
+    print("\n".join(out))
+    sys.exit(0)
 path = home + "/.claude.json"
 cfg = json.load(open(path)) if os.path.exists(path) else {}
 cfg.setdefault("mcpServers", {})[name] = json.loads(text)
@@ -132,6 +145,21 @@ json_merge_mcp() {
   fi
   [ -z "$tmp" ] || rm -f "$tmp"
   return "$rc"
+}
+
+# codex_mcp_merge name file: append one server from a {name: server} file to
+# ~/.codex/config.toml when Codex is installed and lacks it. Header-carrying HTTP servers
+# need config.toml (codex mcp add has no header flag). An unset ${VAR} skips quietly:
+# json_merge_mcp already asked for it and recorded the follow-up.
+codex_mcp_merge() {
+  local name="$1" file="$2" cfg="$HOME/.codex/config.toml"
+  has codex || return 0
+  codex mcp get "$name" >/dev/null 2>&1 && return 0
+  if [ "$DRY_RUN" = 1 ]; then printf '+ add MCP server %s to %s\n' "$name" "$cfg"; return 0; fi
+  [ -z "$(python3 -c "$_MCP_PY" vars "$name" "$file" "$HOME")" ] || return 0
+  mkdir -p "$HOME/.codex"
+  [ -e "$cfg" ] || (umask 077; : >"$cfg")
+  python3 -c "$_MCP_PY" toml "$name" "$file" "$HOME" >>"$cfg" && log "ok codex mcp $name"
 }
 
 # --- text blocks ----------------------------------------------------------

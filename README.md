@@ -50,9 +50,9 @@ In a terminal, `./setup` opens a full-screen TUI: `↑/↓` or `j/k` move, `spac
 |---|---|---|
 | prerequisites | on | Xcode CLT, Homebrew, git, node, python3 |
 | claude-config | on | `~/.claude` config files (`CLAUDE.md`, `settings.json`, `mods/`; `.bak.<ts>` backup of changed ones; existing `CLAUDE.md` marker blocks and `settings.json` keys, hooks and plugins are kept, with `settings.json` deep-merged) |
-| skills | on | symlinks `skills/*` into `~/.claude/skills` (existing real dirs are backed up) |
+| skills | on | symlinks `skills/*` into `~/.claude/skills`, and into `~/.agents/skills` when Codex is present (existing real dirs are backed up) |
 | plugins | on | marketplaces and plugins from `plugins.json` |
-| mcp | on | `mcp.json` servers into `~/.claude.json` (not the tool-owned ones) |
+| mcp | on | `mcp.json` servers into `~/.claude.json`, and into `~/.codex/config.toml` when Codex is installed (not the tool-owned ones) |
 | react-atlas | on | `npm ci && npm link`, global MCP entry (also in Codex when present), agent rules |
 | ex-atlas | off | Mix archive; per project run `mix ex_atlas.install` |
 | qa-engineer | off | Go binary in `~/.local/bin`, MCP entry (also in Codex when present), agent rules; dashboard via `make build` in its folder |
@@ -70,7 +70,7 @@ Choices are saved one per line in `~/.config/claude-setup/choices` (refused if t
 
 ## Secrets
 
-Never in git. `mcp.json` holds `${VAR}` placeholders (e.g. `STITCH_X_GOOG_API_KEY`). The `mcp` module reads them from the environment, or asks with hidden input when interactive, and writes the value only to `~/.claude.json`. With `--yes` and no value, that server is skipped with a follow-up. figma and stitch also need `/mcp` login inside Claude Code.
+Never in git. `mcp.json` holds `${VAR}` placeholders (e.g. `STITCH_X_GOOG_API_KEY`). The `mcp` module reads them from the environment, or asks with hidden input when interactive, and writes the value only to `~/.claude.json` (and `~/.codex/config.toml`, created `0600`, when Codex is installed). With `--yes` and no value, that server is skipped with a follow-up. figma and stitch also need `/mcp` login inside Claude Code.
 
 ## Adding a module
 
