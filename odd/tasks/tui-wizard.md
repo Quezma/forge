@@ -48,4 +48,4 @@ ask-on-risk. Forecast ~500-700 authored lines (Go dominates). Branch `feat/tui-w
 
 ## Next step
 
-T4 verification (real TUI under a TTY).
+Done on branch. User decisions: merge to main, push, tag a release (v*) so first runs without Go can download the binary.
