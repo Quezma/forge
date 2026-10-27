@@ -169,3 +169,16 @@ test_tui_skipped_for_only_and_yes() {
   out="$(script -q /dev/null "$REPO/setup" --yes --dry-run </dev/null 2>&1)" || true
   assert_absent "$out" "TUI-LAUNCHED"
 }
+
+# The TUI child runs ./setup with INTERACTIVE=1 inherited from the launcher and stdout
+# piped; it must not prompt on /dev/tty, which the TUI owns (MCP secret prompt hung).
+test_inherited_interactive_is_cleared_when_not_on_a_tty() {
+  d="$HOME/mods"; mkdir -p "$d"
+  cat >"$d/10-probe.sh" <<'M'
+MODULE_NAME=probe; MODULE_DESC="probe"; MODULE_DEFAULT=on; MODULE_DEPS=""
+probe_status() { echo missing; }
+probe_install() { echo "INTERACTIVE=$INTERACTIVE"; }
+M
+  out="$(INTERACTIVE=1 SETUP_MODULES_DIR="$d" "$REPO/setup" --only probe </dev/null 2>&1)"
+  assert_contains "$out" "INTERACTIVE=0"
+}

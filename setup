@@ -33,7 +33,7 @@ while [ "$#" -gt 0 ]; do
   shift
 done
 if [ "$YES" = 0 ] && [ "$LIST" = 0 ] && { [ ! -t 0 ] || [ ! -t 1 ]; }; then YES=1; fi
-[ "$YES" = 1 ] || INTERACTIVE=1
+INTERACTIVE=0; [ "$YES" = 1 ] || INTERACTIVE=1 # never trust an inherited value: the TUI child must not prompt
 export DRY_RUN INTERACTIVE
 ensure_brew_path
 
