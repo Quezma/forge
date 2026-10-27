@@ -14,6 +14,7 @@ Usage: ./setup [--yes] [--dry-run] [--only a,b] [--list [--porcelain]] [-h]
   --dry-run   print every mutating command as "+ <cmd>" instead of running it
   --only a,b  install exactly these modules (implies --yes)
   --list      show modules with their status and exit
+Interactive runs open the full-screen TUI (wizard/); FORGE_NO_TUI=1 forces the text menu.
   --porcelain with --list: tab-separated name status default selected deps desc
 U
 }
@@ -35,6 +36,29 @@ if [ "$YES" = 0 ] && [ "$LIST" = 0 ] && { [ ! -t 0 ] || [ ! -t 1 ]; }; then YES=
 [ "$YES" = 1 ] || INTERACTIVE=1
 export DRY_RUN INTERACTIVE
 ensure_brew_path
+
+# --- TUI launcher: Go frontend when interactive; the bash menu below is the fallback ---
+launch_tui() {
+  local bin="${FORGE_BIN:-$REPO/wizard/bin/forge}" args=()
+  if [ "$DRY_RUN" != 1 ]; then
+    mkdir -p "$(dirname "$bin")"
+    if has go; then # incremental build; a failure keeps any existing binary
+      (cd "$REPO/wizard" && go build -o "$bin" ./) >/dev/null 2>&1 || true
+    elif [ ! -x "$bin" ]; then
+      if curl -fsSL -o "$bin.tmp" "https://github.com/Quezma/forge/releases/latest/download/forge-darwin-$(uname -m)" 2>/dev/null; then
+        mv "$bin.tmp" "$bin" && chmod +x "$bin"
+      else rm -f "$bin.tmp"; fi
+    fi
+  elif [ ! -x "$bin" ]; then
+    log "(dry-run: not building or downloading the TUI, using the text menu)"
+  fi
+  [ -x "$bin" ] || return 0
+  [ "$DRY_RUN" = 1 ] && args=(--dry-run)
+  FORGE_REPO="$REPO" exec "$bin" ${args[@]+"${args[@]}"}
+}
+if [ "${INTERACTIVE:-0}" = 1 ] && [ -z "$ONLY" ] && [ "$LIST" = 0 ] && [ -z "${FORGE_NO_TUI:-}" ]; then
+  launch_tui
+fi
 
 # --- load modules (metadata in arrays, functions sourced namespaced) ---------
 N=0

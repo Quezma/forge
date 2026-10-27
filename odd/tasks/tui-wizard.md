@@ -32,13 +32,18 @@ ask-on-risk. Forecast ~500-700 authored lines (Go dominates). Branch `feat/tui-w
 
 ## Tasks
 
-- [ ] T1 Bash contract: `--list --porcelain`, `FORGE_EVENTS` lines; tests. Route: delegated (writer trigger, with T2).
-- [ ] T2 Go frontend in `wizard/` (go.mod, model, screens, runner via `setup`), tests. Route: delegated.
-- [ ] T3 `setup` launcher (exec binary / build / download / fallback) + release workflow + README. Route: delegated.
+- [x] T1 Bash contract: `--list --porcelain`, `FORGE_EVENTS` lines; tests. Route: delegated (writer trigger, with T2).
+- [x] T2 Go frontend in `wizard/` (go.mod, model, screens, runner via `setup`), tests. Route: delegated.
+- [x] T3 `setup` launcher (exec binary / build / download / fallback) + release workflow + README. Route: delegated.
 - [ ] T4 Verification: all suites, a real TUI dry-run under a temp HOME. Route: parent.
 
 ## Progress / evidence
 
+- Route: delegated writer (writer trigger), one writer for T1-T3. TDD: strict.
+- T1 `2eb2035`: RED = 2 new tests failing in tests/run.sh, GREEN = 39 passed after change.
+- T2 `31a9e68`: RED = `go vet` undefined: model (model_test.go written first); GREEN = go test ok. setup.go parsing/runner tests were written right after the code (not RED-first). Decisions: deselecting a module also deselects its dependents (notice shown); runner is a function field.
+- T3: RED = tui launch test failing; GREEN = tests/run.sh 42 passed. Decision: in dry-run the TUI starts only if the binary already exists (no build/download, message printed). `FORGE_BIN` overrides the binary path (used by tests). Go build runs on every interactive launch when Go exists (incremental).
+
 ## Next step
 
-T1-T3 via one writer.
+T4 verification (real TUI under a TTY).

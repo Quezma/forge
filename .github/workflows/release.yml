@@ -1,0 +1,23 @@
+name: release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: wizard/go.mod
+      - name: Build darwin binaries
+        working-directory: wizard
+        run: |
+          GOOS=darwin GOARCH=arm64 go build -o forge-darwin-arm64 ./
+          GOOS=darwin GOARCH=amd64 go build -o forge-darwin-x86_64 ./
+      - name: Upload release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --generate-notes wizard/forge-darwin-arm64 wizard/forge-darwin-x86_64 || gh release upload "$GITHUB_REF_NAME" wizard/forge-darwin-arm64 wizard/forge-darwin-x86_64 --clobber

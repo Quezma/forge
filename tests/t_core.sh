@@ -137,3 +137,35 @@ M
   out="$(SETUP_MODULES_DIR="$d" "$REPO/setup" --yes 2>&1)" || true
   assert_absent "$out" "@@forge"
 }
+
+# fake_tui: a stand-in forge binary that just reports how it was launched.
+fake_tui() {
+  printf '#!/bin/sh\necho "TUI-LAUNCHED repo=$FORGE_REPO args=$*"\n' >"$HOME/forge"
+  chmod +x "$HOME/forge"; export FORGE_BIN="$HOME/forge"
+}
+
+test_tui_not_launched_without_tty() {
+  stub_modules; fake_tui
+  out="$("$REPO/setup" --dry-run </dev/null 2>&1)"
+  assert_absent "$out" "TUI-LAUNCHED"
+  assert_contains "$out" "==> skills"
+}
+
+test_tui_launched_on_tty_and_opt_out() {
+  command -v script >/dev/null 2>&1 || return 0
+  stub_modules; fake_tui
+  out="$(script -q /dev/null "$REPO/setup" --dry-run </dev/null 2>&1)" || true
+  assert_contains "$out" "TUI-LAUNCHED repo=$REPO args=--dry-run"
+  out="$(FORGE_NO_TUI=1 script -q /dev/null "$REPO/setup" --dry-run </dev/null 2>&1)" || true
+  assert_absent "$out" "TUI-LAUNCHED"
+  assert_contains "$out" "Select modules"
+}
+
+test_tui_skipped_for_only_and_yes() {
+  command -v script >/dev/null 2>&1 || return 0
+  stub_modules; fake_tui
+  out="$(script -q /dev/null "$REPO/setup" --only skills --dry-run </dev/null 2>&1)" || true
+  assert_absent "$out" "TUI-LAUNCHED"
+  out="$(script -q /dev/null "$REPO/setup" --yes --dry-run </dev/null 2>&1)" || true
+  assert_absent "$out" "TUI-LAUNCHED"
+}

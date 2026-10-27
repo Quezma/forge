@@ -29,6 +29,7 @@ git clone https://github.com/Quezma/forge.git && cd forge && ./setup
 
 ```
 setup            the wizard (plain bash, works with macOS /bin/bash 3.2)
+wizard/          Go + Bubbletea TUI frontend for setup (optional; bash menu is the fallback)
 install.sh       shim: exec ./setup
 snapshot.sh      export this machine's config back into the repo
 lib/common.sh    shared helpers (run, log, followup, json_merge_mcp, insert_block, ...)
@@ -43,7 +44,7 @@ tools/           ex_atlas, react_atlas, qa-engineer (git subtree imports)
 
 ## Usage
 
-Numbers toggle modules, `a` selects all, `n` none, Enter runs. Dependencies are selected for you. Modules run in numeric order; a failing module does not stop the others, but its dependents are skipped. The summary lists `ok|failed|skipped` and manual follow-ups. Re-running is safe.
+In a terminal, `./setup` opens a full-screen TUI: `↑/↓` or `j/k` move, `space` toggles, `a` all, `n` none, `Enter` continues (welcome, pick, review, live progress, summary), `esc` goes back, `q` quits. Selecting a module also selects its dependencies; deselecting one also deselects the modules that need it. The binary is built with `go build` into `wizard/bin/forge` when Go is installed, else downloaded from the latest GitHub release; if neither works, or `FORGE_NO_TUI=1` is set, or stdin/stdout is not a terminal, you get the plain numbered menu: numbers toggle modules, `a` selects all, `n` none, Enter runs. With `--dry-run` the TUI is only used when `wizard/bin/forge` already exists (nothing is built or downloaded). Dependencies are selected for you. Modules run in numeric order; a failing module does not stop the others, but its dependents are skipped. The summary lists `ok|failed|skipped` and manual follow-ups. Re-running is safe.
 
 | Module | Default | What it does |
 |---|---|---|
