@@ -127,3 +127,9 @@ test_codex_mcp_add_skips_when_present_or_codex_missing() {
   codex_mcp_add y cmd
   assert_eq "$(wc -l <"$HOME/calls" | tr -d ' ')" "1"
 }
+
+test_every_repo_skill_has_a_routing_rule() {
+  for s in "$REPO"/skills/*/; do
+    s="${s%/}"; grep -q "\`${s##*/}\`" "$REPO/rules/skills.md" || { echo "no rule for ${s##*/} in rules/skills.md" >&2; return 1; }
+  done
+}
