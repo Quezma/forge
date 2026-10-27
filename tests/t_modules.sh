@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Tests against the real modules.
-ALL_MODULES="prerequisites claude-config skills plugins mcp react-atlas ex-atlas qa-engineer"
+ALL_MODULES="prerequisites claude-config skills plugins mcp react-atlas ex-atlas qa-engineer archify"
 
 test_list_shows_all_modules_with_status() {
   out="$("$REPO/setup" --list)"
@@ -65,6 +65,28 @@ test_mcp_and_tool_modules_dry_run() {
   assert_contains "$out" "claude plugin install"
   assert_contains "$out" "merge MCP server context7"
   assert_eq "$(printf '%s\n' "$out" | grep -c 'merge MCP server qa-engineer')" "1" # owned by its module only
+}
+
+test_archify_dry_run_prints_install_command() {
+  out="$("$REPO/setup" --only archify --dry-run)"
+  assert_contains "$out" "==> archify"
+  assert_contains "$out" "+ npx -y skills add tt-a1i/archify --skill archify --agent claude-code --global --yes"
+  [ ! -e "$HOME/.claude/skills/archify" ]
+}
+
+test_archify_status_follows_installed_skill() {
+  . "$REPO/lib/common.sh"; . "$REPO/modules/09-archify.sh"
+  assert_eq "$(archify_status)" "missing"
+  mkdir -p "$HOME/.claude/skills/archify/bin"; : >"$HOME/.claude/skills/archify/bin/archify.mjs"
+  assert_eq "$(archify_status)" "installed"
+}
+
+test_archify_without_npx_emits_followup() {
+  . "$REPO/lib/common.sh"; . "$REPO/modules/09-archify.sh"
+  has() { [ "$1" != npx ] && command -v "$1" >/dev/null 2>&1; }
+  out="$(archify_install)"
+  assert_contains "$out" "follow-up:"
+  assert_contains "$out" "--only archify"
 }
 
 test_no_secret_in_tracked_or_new_files() {

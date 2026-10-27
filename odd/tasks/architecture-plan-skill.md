@@ -8,11 +8,13 @@ TDD: strict; runner `tests/run.sh`. Module: RED test first. Prose: structural re
 Delivery: forecast ~350 authored lines, single-pr strategy n/a (repo commits to main per precedent).
 
 ## Tasks
-- [ ] T1 RED test + `modules/09-archify.sh` (install via `npx skills add tt-a1i/archify --skill archify --agent claude-code --global --yes`, status, dry-run, followup when npx missing). — route: delegated writer (2+ files)
-- [ ] T2 Write `skills/architecture-plan/SKILL.md`, `assets/procedure.md` (scrape → forces → diagram set → trade-offs → handoff), `assets/plan-template.md`; verify Archify CLI commands/schema against the installed skill. — route: delegated writer (same worker, preparation trigger)
-- [ ] T3 Add row to `rules/skills.md` (new project/service/major feature, before `architecture-patterns` Design). — route: inline (one line)
+- [x] T1 RED test + `modules/09-archify.sh` (install via `npx skills add tt-a1i/archify --skill archify --agent claude-code --global --yes`, status, dry-run, followup when npx missing). — route: delegated writer (2+ files) Evidence: RED 33/4 (unknown module archify), GREEN 37/0; dry-run prints npx install.
+- [x] T2 Write `skills/architecture-plan/SKILL.md`, `assets/procedure.md` (scrape → forces → diagram set → trade-offs → handoff), `assets/plan-template.md`; verify Archify CLI commands/schema against the installed skill. — route: delegated writer (same worker, preparation trigger) Evidence: 232 lines; Archify v3.2 verified in scratch HOME: doctor ok, finalize + compare architecture ok, repo-evidence check fails on bad range. Corrections: finalize (not deliver) is the gate; compare is architecture-only; no per-node status field (use Delta + tag/variant/cards); sources need meta.repository + origin remote.
+- [x] T3 Add row to `rules/skills.md` (new project/service/major feature, before `architecture-patterns` Design). — route: inline (one line) Evidence: routing test green.
 
 ## Acceptance
 - tests/run.sh green; `./setup --only archify --dry-run` prints the install command; `./setup --only skills --dry-run` symlinks the skill.
 - Every Archify command and JSON field the skill names exists in the installed Archify version.
 - Plan output dir layout and diagram set are defined; current-state nodes require repo evidence.
+
+Note: verification `./setup --only archify --dry-run` on real HOME overwrote ~/.config/claude-setup/choices (dry-run saves choices by design, tested in t_core.sh). User decision pending.
